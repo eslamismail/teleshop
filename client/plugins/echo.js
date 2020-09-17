@@ -1,6 +1,5 @@
 require("dotenv").config();
-const Cookie = process.client ? require("js-cookie") : undefined;
-let token = Cookie.get("token");
+let token = window.localStorage.getItem("token");
 
 import Echo from "laravel-echo";
 

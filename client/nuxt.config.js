@@ -2,10 +2,11 @@ require("dotenv").config();
 const { join } = require("path");
 const { copySync, removeSync } = require("fs-extra");
 export default {
-  mode: "spa",
+  ssr: false,
   /*
    ** Headers of the page
    */
+
   srcDir: __dirname,
 
   env: {
@@ -28,12 +29,35 @@ export default {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      {
+        rel: "stylesheet",
+        href:
+          "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      }
+    ],
+    script: [
+      { src: "https://code.jquery.com/jquery-3.5.1.slim.min.js", body: true },
+      {
+        src:
+          "https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js",
+        body: true
+      },
+      {
+        src:
+          "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js",
+        body: true
+      },
+      {
+        src: "https://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js",
+        async: "async"
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
    */
-
   /*
    ** Global CSS
    */
@@ -43,9 +67,11 @@ export default {
    */
   plugins: [
     { src: "~plugins/axios" },
-    { src: "~plugins/ant-design-vue" },
-    { src: "~/plugins/echo.js", ssr: false }
+    { src: "~/plugins/echo.js", ssr: false },
+    { src: "~plugins/packages" }
   ],
+  components: true,
+
   buildModules: [],
   /*
    ** Nuxt.js dev-modules
@@ -54,13 +80,12 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ["bootstrap-vue/nuxt"],
+  modules: [],
 
   /*
    ** Build configuration
    */
   build: {
-    extractCSS: true,
     extend(config, { isDev, isClient }) {
       config.node = {
         fs: "empty"

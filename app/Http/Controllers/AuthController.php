@@ -11,86 +11,12 @@ use Storage;
 
 class AuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|string|email|exists:users,email',
             'password' => 'required|string|min:6',
-            'remember_me' => 'boolean',
+            'remember_me' => 'in:off,on',
         ]);
         $credentials = request(['email', 'password']);
         if (!Auth::attempt($credentials)) {
@@ -99,7 +25,7 @@ class AuthController extends Controller
             ], 401);
         }
         $user = $request->user();
-        $tokenResult = $user->createToken('Personal Access Token');
+        $tokenResult = $user->createToken('Personal Token');
         $token = $tokenResult->token;
         if ($request->remember_me) {
             $token->expires_at = Carbon::now()->addWeeks(1);
@@ -108,10 +34,7 @@ class AuthController extends Controller
 
         return response()->json([
             'access_token' => $tokenResult->accessToken,
-            'token_type' => 'Bearer',
-            'expires_at' => Carbon::parse(
-                $tokenResult->token->expires_at
-            )->toDateTimeString(),
+            'user' => $request->user(),
         ]);
     }
 
