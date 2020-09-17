@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m-1">
     <span class="text-danger">{{error}}</span>
   </div>
 </template>

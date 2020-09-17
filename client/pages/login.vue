@@ -43,9 +43,16 @@
 </template>
 <script>
 import Error from "../components/public/error";
+const Cookie = process.client ? require("js-cookie") : undefined;
+
 export default {
   components: {
     Error,
+  },
+  head() {
+    return {
+      title: "Teleshop login",
+    };
   },
   data() {
     return {
@@ -60,10 +67,13 @@ export default {
       let form = new FormData(event.target);
       try {
         let response = await axios.post("/login", form);
+        Cookie.set("token", response.data.access_token);
+        window.location.href = "/";
         console.log(response);
       } catch (error) {
         if (!error.response) {
           alert("no internet");
+          console.log(error);
         } else if (error.response.status == 422) {
           this.errors = error.response.data.errors;
         } else if (error.response.status == 401) {

@@ -1,7 +1,7 @@
 <?php
 
+use App\Events\Test;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,5 +17,6 @@ Route::get('/login', function () {
     return file_get_contents(public_path('_nuxt/index.html'));
 })->name('login');
 Route::get('{path}', function () {
+    broadcast(new Test(['message' => 'aywa ba2a']));
     return file_get_contents(public_path('_nuxt/index.html'));
 })->where('path', '(.*)');
