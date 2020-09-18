@@ -17,7 +17,7 @@ Broadcast::routes(['middleware' => ['auth:api']]);
 |
  */
 
-// Route::post('/signup', 'AuthController@signup');
+Route::post('/signup', 'AuthController@signup');
 Route::post('login', 'AuthController@login');
 
 Route::group(['middleware' => 'auth:api'], function () {

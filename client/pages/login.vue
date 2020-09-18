@@ -1,6 +1,6 @@
 <template>
-  <div id="body" class="align-items-center">
-    <div class="container">
+  <div id="body">
+    <div class="container mt-5 mb-5">
       <div class="row justify-content-lg-end justify-content-md-center">
         <form
           class="col-md-8 col-12 col-lg-5 card card-body shadow-lg rounded p-5"
@@ -96,7 +96,6 @@ export default {
         });
       } catch (error) {
         if (!error.response) {
-          clg;
           this.$notify({
             group: "foo",
             text: `No internet access`,

@@ -1,10 +1,11 @@
 <template>
-  <div id="body" class="align-items-center">
+  <div id="body">
     <div class="container">
       <div class="row justify-content-lg-end justify-content-md-center">
         <form
-          class="col-md-8 col-12 col-lg-5 card card-body shadow-lg rounded p-5"
+          class="col-md-8 col-12 col-lg-5 card card-body shadow-lg rounded"
           autocomplete="off"
+          @submit.prevent="signup"
         >
           <div class="text-center col-md-12 col-12 col-lg-12">
             <div class="row justify-content-center">
@@ -14,38 +15,74 @@
             </div>
           </div>
           <div class="form-group row">
-            <label for="first_name" class="col-md-3 col-form-label">First name</label>
-            <div class="col-md-9">
+            <label for="first_name" class="col-md-4 col-form-label">First name</label>
+            <div class="col-md-8">
               <input type="text" name="first_name" id="first_name" class="form-control" />
               <Error v-for="(item, index) in errors.first_name" :error="item" :key="index" />
             </div>
           </div>
           <div class="form-group row">
-            <label for="last_name" class="col-md-3 col-form-label">Last name</label>
-            <div class="col-md-9">
+            <label for="last_name" class="col-md-4 col-form-label">Last name</label>
+            <div class="col-md-8">
               <input type="text" name="last_name" id="last_name" class="form-control" />
               <Error v-for="(item, index) in errors.last_name" :error="item" :key="index" />
             </div>
           </div>
           <div class="form-group row">
-            <label for="mobile" class="col-md-3 col-form-label">Mobile</label>
-            <div class="col-md-9">
+            <label for="mobile" class="col-md-4 col-form-label">Mobile</label>
+            <div class="col-md-8">
               <input type="text" name="mobile" id="mobile" class="form-control" />
               <Error v-for="(item, index) in errors.mobile" :error="item" :key="index" />
             </div>
           </div>
           <div class="form-group row">
-            <label for="email" class="col-md-3 col-form-label">Email</label>
-            <div class="col-md-9">
+            <label for="type" class="col-md-4 col-form-label">Type</label>
+            <div class="col-md-8">
+              <div class="custom-control custom-radio">
+                <input type="radio" id="user" value="user" name="type" class="custom-control-input" />
+                <label class="custom-control-label" for="user">User</label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input
+                  type="radio"
+                  id="vendor"
+                  name="type"
+                  value="vendor"
+                  class="custom-control-input"
+                />
+                <label class="custom-control-label" for="vendor">Vendor</label>
+              </div>
+              <Error v-for="(item, index) in errors.type" :error="item" :key="index" />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="email" class="col-md-4 col-form-label">Email</label>
+            <div class="col-md-8">
               <input type="email" name="email" id="email" class="form-control" />
               <Error v-for="(item, index) in errors.email" :error="item" :key="index" />
             </div>
           </div>
           <div class="form-group row">
-            <label for="password" class="col-md-3 col-form-label">Password</label>
-            <div class="col-md-9">
+            <label for="password" class="col-md-4 col-form-label">Password</label>
+            <div class="col-md-8">
               <input type="password" name="password" id="password" class="form-control" />
               <Error v-for="(item, index) in errors.password" :error="item" :key="index" />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="password_confirmation" class="col-md-4 col-form-label">Password confirmation</label>
+            <div class="col-md-8">
+              <input
+                type="password"
+                name="password_confirmation"
+                id="password_confirmation"
+                class="form-control"
+              />
+              <Error
+                v-for="(item, index) in errors.password_confirmation"
+                :error="item"
+                :key="index"
+              />
             </div>
           </div>
           <div class="form-group row">
@@ -77,24 +114,86 @@ export default {
       title: "Teleshop register",
     };
   },
-  mounted() {},
   data() {
     return {
       errors: {},
     };
   },
   computed: {
-    user() {
-      return this.$store.state.login.user;
-    },
     app_logo() {
       return this.$store.state.public.app_logo;
     },
   },
-  methods: {},
+  methods: {
+    signup: async function () {
+      let form = new FormData(event.target);
+      try {
+        let response = await axios.post("/signup", form);
+        this.errors = {};
+        this.$store.commit("login/login", response.data);
+        const { message } = response.data;
+        this.$notify({
+          group: "foo",
+          text: message,
+          type: "success",
+        });
+      } catch (error) {
+        if (!error.response) {
+          this.errors = {};
+
+          this.$notify({
+            group: "foo",
+            text: `No internet access`,
+            type: "error",
+          });
+        } else if (error.response.status == 422) {
+          this.errors = error.response.data.errors;
+          let { message } = error.response.data;
+          this.$notify({
+            group: "foo",
+            text: message,
+            type: "error",
+          });
+        } else if (error.response.status == 401) {
+          this.errors = {};
+          let { message } = error.response.data;
+          this.$notify({
+            group: "foo",
+            text: message,
+            type: "error",
+          });
+          $nuxt.$store.commit("login/logout", {});
+        } else if (error.response.status == 400) {
+          this.errors = {};
+          let { message } = error.response.data;
+          this.$notify({
+            group: "foo",
+            text: message,
+            type: "error",
+          });
+        } else {
+          let { statusText } = error.response.data;
+          this.errors = {};
+          this.$notify({
+            group: "foo",
+            text: statusText,
+            type: "error",
+          });
+        }
+      }
+    },
+  },
 };
 </script>
 <style  scoped>
+body {
+  margin: 0;
+  padding: 0;
+}
+html {
+  margin: 0;
+  padding: 0;
+}
 #body {
   position: fixed;
   top: 0;
@@ -114,6 +213,7 @@ export default {
 
 label {
   color: #838071;
+  text-transform: capitalize;
 }
 
 .form-control {
