@@ -17,7 +17,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
             'remember_me' => 'in:off,on',
         ]);
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only(['email', 'password']);
         if (!Auth::attempt($credentials)) {
             return response()->json([
                 'message' => 'Unauthorized',

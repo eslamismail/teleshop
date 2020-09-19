@@ -66,6 +66,7 @@ export default {
     };
   },
   mounted() {},
+  created() {},
   data() {
     return {
       errors: {
