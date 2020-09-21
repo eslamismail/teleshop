@@ -22,6 +22,7 @@ class User extends Authenticatable
         'mobile',
         'password',
         'type',
+        'profile_picture',
     ];
 
     /**
@@ -41,6 +42,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = [
+        'full_name',
+        'profile_picture_url',
+    ];
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getProfilePictureUrlAttribute()
+    {
+        if ($this->profile_picture && file_exists(public_path($this->profile_picture))) {
+            return asset($this->profile_picture);
+        } else {
+            return 'https://cdn1.vectorstock.com/i/1000x1000/51/05/male-profile-avatar-with-brown-hair-vector-12055105.jpg';
+        }
+    }
 
     public function tokens()
     {

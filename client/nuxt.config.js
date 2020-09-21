@@ -70,7 +70,7 @@ export default {
     { src: "~/plugins/echo.js", ssr: false },
     { src: "~plugins/packages" }
   ],
-  components: true,
+  components: false,
 
   buildModules: [],
   /*

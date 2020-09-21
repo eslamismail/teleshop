@@ -22,6 +22,8 @@ Route::post('login', 'AuthController@login');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('user', 'UserController@getUser');
+    Route::get('users', 'UserController@index');
+
     Route::post('sendMessage', function (Request $request) {
         broadcast(new Test($request->all()));
     });
