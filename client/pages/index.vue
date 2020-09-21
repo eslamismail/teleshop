@@ -22,7 +22,12 @@
             </div>
             <div class="inbox_chat">
               <!-- single user  -->
-              <chat-list v-for="(item, index) in users" :user="item" :key="index" />
+              <chat-list
+                v-for="(item, index) in users"
+                :user="item"
+                :key="index"
+                @active="setActive"
+              />
             </div>
           </div>
           <div class="mesgs">
@@ -30,6 +35,7 @@
               <incomming />
               <outgoing />
             </div>
+            <div class="typing">{{typing}}</div>
             <send-message />
           </div>
         </div>
@@ -54,6 +60,7 @@ export default {
   data() {
     return {
       users: [],
+      typing: "",
     };
   },
   head() {
@@ -75,12 +82,12 @@ export default {
   },
   mounted() {
     Echo.private("test").listen("Test", (e) => {
-      this.message = e.data.message;
+      // this.message = e.data.message;
     });
 
     Echo.private("chat").listenForWhisper("typing", (e) => {
       if (this.user.id != e.user.id) {
-        this.typing = `${e.user.first_name} ${e.user.last_name} typing`;
+        this.typing = `${e.user.full_name} typing`;
         setTimeout(() => {
           this.typing = "";
         }, 3000);
@@ -90,10 +97,28 @@ export default {
     this.getUsers();
   },
   methods: {
+    setActive(id) {
+      let elements = document.getElementsByClassName("chat_list");
+      for (let index = 0; index < elements.length; index++) {
+        const element = elements[index];
+        element.classList.remove("active_chat");
+      }
+      let x = setInterval(() => {
+        if (document.getElementById(`chat_list_${id}`)) {
+          document
+            .getElementById(`chat_list_${id}`)
+            .classList.add("active_chat");
+          clearInterval(x);
+        }
+      }, 100);
+    },
     async getUsers() {
       try {
         let response = await axios.get("/users");
         this.users = response.data.users;
+        if (this.users[0]) {
+          this.setActive(this.users[0].id);
+        }
       } catch (error) {
         if (!error.response) {
           this.$notify({

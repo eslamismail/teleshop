@@ -1,5 +1,9 @@
 <template>
-  <div class="chat_list active_chat">
+  <div
+    :class="`chat_list ${ active ?  'active_chat' : ''}`"
+    @click.prevent="setActive()"
+    :id="`chat_list_${user.id}`"
+  >
     <div class="chat_people">
       <div class="chat_img">
         <img :src="user.profile_picture_url" alt="sunil" />
@@ -25,10 +29,17 @@ export default {
       type: Object,
       required: true,
     },
+    active: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     solveDate(data) {
       return moment(data).format("ll");
+    },
+    setActive() {
+      this.$emit("active", `${this.user.id}`);
     },
   },
 };
