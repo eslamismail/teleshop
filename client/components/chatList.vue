@@ -1,21 +1,25 @@
 <template>
   <div
-    :class="`chat_list ${ active ?  'active_chat' : ''}`"
+    :class="`chat_list ${active ? 'active_chat' : ''}`"
     @click.prevent="setActive()"
-    :id="`chat_list_${user.id}`"
+    :id="`chat_list_${room.id}`"
   >
     <div class="chat_people">
       <div class="chat_img">
-        <img :src="user.profile_picture_url" alt="sunil" />
+        <img
+          v-if="room.room_image"
+          :src="room.room_image"
+          style="border-radius: 50%"
+          alt="sunil"
+        />
       </div>
       <div class="chat_ib">
         <h5>
-          {{user.full_name}}
-          <span class="chat_date">{{solveDate(user.created_at)}}</span>
+          {{ room.room_name }}
+          <span class="chat_date">{{ solveDate(room.message_send_at) }}</span>
         </h5>
         <p>
-          Test, which is a new approach to have all solutions
-          astrology under one roof.
+          {{ room.last_message }}
         </p>
       </div>
     </div>
@@ -25,7 +29,7 @@
 const moment = require("moment");
 export default {
   props: {
-    user: {
+    room: {
       type: Object,
       required: true,
     },
@@ -39,7 +43,7 @@ export default {
       return moment(data).format("ll");
     },
     setActive() {
-      this.$emit("active", `${this.user.id}`);
+      this.$emit("active", `${this.room.id}`);
     },
   },
 };

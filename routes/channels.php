@@ -20,6 +20,6 @@ Broadcast::channel('test', function ($user) {
     return $user;
 });
 
-Broadcast::channel('chat', function ($user) {
+Broadcast::channel('chat-{id}', function ($user) {
     return $user;
 });

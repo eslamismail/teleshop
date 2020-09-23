@@ -1,7 +1,5 @@
 <?php
 
-use App\Events\Test;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Broadcast::routes(['middleware' => ['auth:api']]);
@@ -23,9 +21,7 @@ Route::post('login', 'AuthController@login');
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('user', 'UserController@getUser');
     Route::get('users', 'UserController@index');
-
-    Route::post('sendMessage', function (Request $request) {
-        broadcast(new Test($request->all()));
-    });
-
+    Route::get('rooms', 'RoomController@index');
+    Route::get('rooms/{id}', 'RoomController@show');
+    Route::post('/rooms/{id}/message', 'RoomController@sendMessage');
 });
