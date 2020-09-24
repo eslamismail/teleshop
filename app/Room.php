@@ -44,7 +44,7 @@ class Room extends Model
         try {
             return $message = Message::where('room_id', $this->id)->get()->last()->message;
         } catch (\Throwable $th) {
-            return null;
+            return 'Say hi';
         }
 
     }
@@ -54,7 +54,7 @@ class Room extends Model
         try {
             return $message = Message::where('room_id', $this->id)->get()->last()->created_at;
         } catch (\Throwable $th) {
-            return null;
+            return $this->created_at;
         }
     }
 

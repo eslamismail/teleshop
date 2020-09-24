@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Room;
+use App\RoomMember;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -14,7 +16,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('id', '!=', auth()->id())->get();
+        $rooms = Room::whereHas('members', function ($q) {
+            $q->where('user_id', auth()->id());
+        })->get()->pluck('id');
+        $members = RoomMember::whereIn('room_id', $rooms)->get()->pluck('user_id');
+        $users = User::where('id', '!=', auth()->id())->whereNotIn('id', $members)->get();
         return response()->json([
             'users' => $users,
         ]);

@@ -8,7 +8,7 @@
               <div class="recent_heading">
                 <h4 v-if="user">
                   <img
-                    style="border-radius: 50%;max-width:11%;"
+                    style="border-radius: 50%; max-width: 11%"
                     :src="user.profile_picture_url"
                     alt
                   />
@@ -17,7 +17,7 @@
               </div>
               <div class="srch_bar">
                 <div class="stylish-input-group">
-                  <button class="btn btn-default">+</button>
+                  <add-user />
                 </div>
               </div>
             </div>
@@ -34,7 +34,11 @@
           <div class="mesgs">
             <div v-if="messages.length > 0">
               <div class="msg_history" id="msg_history">
-                <incomming v-for="(item, index) in messages" :key="index" :message="item" />
+                <incomming
+                  v-for="(item, index) in messages"
+                  :key="index"
+                  :message="item"
+                />
               </div>
             </div>
             <div v-else class="msg_history align-content-center d-flex">
@@ -53,7 +57,7 @@ import chatList from "../components/chatList";
 import incomming from "../components/incommingMessage";
 import outgoing from "../components/outgoing";
 import sendMessage from "../components/sendMessage";
-
+import AddUser from "../components/addUser";
 export default {
   middleware: "auth",
   components: {
@@ -61,6 +65,7 @@ export default {
     incomming,
     outgoing,
     sendMessage,
+    AddUser,
   },
   data() {
     return {
@@ -87,6 +92,11 @@ export default {
     user() {
       return this.$store.state.login.user;
     },
+  },
+  created() {
+    Echo.private(`room-${this.user.id}`).listen("NewRoom", (e) => {
+      this.rooms.unshift(e.room);
+    });
   },
   mounted() {
     this.getRooms();

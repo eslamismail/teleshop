@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewMessage;
+use App\Events\NewRoom;
 use App\Message;
 use App\Room;
+use App\RoomMember;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller
@@ -40,7 +42,34 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $checkMember = Room::whereHas('members', function ($q) {
+            $q->where('user_id', auth()->id());
+        })->whereHas('members', function ($q) use ($request) {
+            $q->where('user_id', $request->user_id);
+        })->where('type', 'one')->get();
+        if (count($checkMember) > 0) {
+            return response()->json([
+                'message' => 'You contact this preson before',
+            ], 400);
+        }
+        $room = new Room();
+        $room->type = 'one';
+        $room->save();
+        $members = new RoomMember();
+        $members->user_id = $request->user_id;
+        $members->room_id = $room->id;
+        $members->save();
+        broadcast(new NewRoom($members));
+        $members = new RoomMember();
+        $members->user_id = auth()->id();
+        $members->room_id = $room->id;
+        $members->save();
+        broadcast(new NewRoom($members));
+        return response()->json(['message' => 'room created successfully']);
     }
 
     /**
@@ -51,6 +80,18 @@ class RoomController extends Controller
      */
     public function show($id)
     {
+        try {
+            $room = Room::findOrFail($id);
+
+        } catch (\Throwable $th) {
+            $messages = Message::with('sender')->where('room_id', $id)->get();
+            foreach ($messages as $message) {
+                $message->delete();
+            }
+            return response()->json([
+                'message' => 'room deleted by the admin',
+            ], 404);
+        }
         $messages = Message::with('sender')->where('room_id', $id)->get();
         return response()->json(['messages' => $messages]);
     }
