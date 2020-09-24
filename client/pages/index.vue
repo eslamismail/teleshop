@@ -1,22 +1,23 @@
 <template>
   <div>
-    <div class="container pt-4">
-      <h3 class="text-center">{{ user.full_name }}</h3>
+    <div class="container h-100">
       <div class="messaging">
         <div class="inbox_msg">
           <div class="inbox_people">
             <div class="headind_srch">
               <div class="recent_heading">
-                <h4></h4>
+                <h4 v-if="user">
+                  <img
+                    style="border-radius: 50%;max-width:11%;"
+                    :src="user.profile_picture_url"
+                    alt
+                  />
+                  {{ user.full_name }}
+                </h4>
               </div>
               <div class="srch_bar">
                 <div class="stylish-input-group">
-                  <input type="text" class="search-bar" placeholder="Search" />
-                  <span class="input-group-addon">
-                    <button type="button">
-                      <i class="fa fa-search" aria-hidden="true"></i>
-                    </button>
-                  </span>
+                  <button class="btn btn-default">+</button>
                 </div>
               </div>
             </div>
@@ -33,11 +34,7 @@
           <div class="mesgs">
             <div v-if="messages.length > 0">
               <div class="msg_history" id="msg_history">
-                <incomming
-                  v-for="(item, index) in messages"
-                  :key="index"
-                  :message="item"
-                />
+                <incomming v-for="(item, index) in messages" :key="index" :message="item" />
               </div>
             </div>
             <div v-else class="msg_history align-content-center d-flex">
@@ -108,11 +105,21 @@ export default {
     }, 100);
   },
   methods: {
+    scrollDown() {
+      var objDiv = document.getElementById("msg_history");
+      const x = setInterval(() => {
+        if (objDiv) {
+          objDiv.scrollTop = objDiv.scrollHeight;
+          clearInterval(x);
+        }
+      }, 100);
+    },
     setActive(id) {
       let elements = document.getElementsByClassName("chat_list");
       if (this.room) {
         this.leavePrivate(this.room.id);
       }
+      this.scrollDown();
       this.room = this.rooms.find((item) => item.id == id);
       this.selectedRoom = true;
       for (let index = 0; index < elements.length; index++) {
@@ -132,6 +139,7 @@ export default {
           this.messages[0].room_id == this.room.id) ||
         this.lastRoom == this.room.id
       ) {
+        this.openSocket(id);
         return false;
       }
       this.getMessages(id);
@@ -150,8 +158,8 @@ export default {
         })
         .listen("NewMessage", (e) => {
           this.messages.push(e.message);
+          this.room.message_send_at = e.message.created_at;
           this.room.last_message = e.message.message;
-          console.log(document.getElementById("msg_history").style.height);
         });
     },
     leavePrivate(id) {

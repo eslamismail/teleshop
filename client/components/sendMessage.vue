@@ -8,22 +8,19 @@
         placeholder="Type a message"
         id="message"
         @keydown.enter="sendMessage"
+        autocomplete="off"
       />
       <button class="msg_send_btn" @click.prevent="sendMessage" type="button">
         <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
       </button>
-      <error
-        v-for="(item, index) in errors.message"
-        :error="item"
-        :key="index"
-      />
+      <error v-for="(item, index) in errors.message" :error="item" :key="index" />
     </div>
   </div>
 </template>
 <script>
 import Error from "../components/public/error";
 export default {
-  components: { error },
+  components: { Error },
   props: {
     roomID: {
       type: Number,
