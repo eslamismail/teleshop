@@ -6,6 +6,7 @@
     <div class="received_msg">
       <div class="received_withd_msg">
         <p>{{ message.message }}</p>
+        <img v-for="item,key in message.images_url" :src="item" :key="index"/>
         <span class="time_date">{{ created_at }}</span>
       </div>
     </div>

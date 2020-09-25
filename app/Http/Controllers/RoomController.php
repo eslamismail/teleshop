@@ -8,7 +8,7 @@ use App\Message;
 use App\Room;
 use App\RoomMember;
 use Illuminate\Http\Request;
-
+use Storage;
 class RoomController extends Controller
 {
     /**
@@ -136,6 +136,10 @@ class RoomController extends Controller
         ]);
 
         $data = $request->only(['message']);
+        if($request->has('image')){
+            $image = [Storage::disk('uploads')->put('messages',$request->image)];
+            $data['images'] = json_encode($image);
+        }
         $data['sender_id'] = auth()->id();
         $data['room_id'] = $id;
         $message = Message::create($data);

@@ -160,7 +160,7 @@ export default {
       Echo.private(`chat-${id}`)
         .listenForWhisper("typing", (e) => {
           if (this.user.id != e.user.id) {
-            this.typing = `${e.user.full_name} typing`;
+            this.typing = `${e.user.full_name} typing.....`;
             setTimeout(() => {
               this.typing = "";
             }, 3000);

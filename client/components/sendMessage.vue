@@ -1,18 +1,20 @@
 <template>
   <div class="type_msg">
     <div class="input_msg_write">
+    <form   @submit.prevent="sendMessage">
       <input
         @keypress="typing"
         type="text"
         class="write_msg"
         placeholder="Type a message"
-        id="message"
-        @keydown.enter="sendMessage"
+        name="message"
         autocomplete="off"
       />
-      <button class="msg_send_btn" @click.prevent="sendMessage" type="button">
+      <input type="file" name="image">
+      <button class="msg_send_btn"  type="submit">
         <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
       </button>
+    </form>
       <error v-for="(item, index) in errors.message" :error="item" :key="index" />
     </div>
   </div>
@@ -46,14 +48,14 @@ export default {
       });
     },
     async sendMessage() {
-      let message = document.getElementById("message").value;
+      let form = new FormData(event.target)
       try {
-        await axios.post(`/rooms/${this.roomID}/message`, { message });
-        document.getElementById("message").value = null;
+        await axios.post(`/rooms/${this.roomID}/message`, form);
         this.errors = {
           message: [],
         };
       } catch (error) {
+        console.log('error',error)
         if (!error.response) {
           this.$notify({
             group: "foo",

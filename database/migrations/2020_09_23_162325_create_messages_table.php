@@ -18,7 +18,7 @@ class CreateMessagesTable extends Migration
             $table->unsignedBigInteger('sender_id')->nullable();
             $table->unsignedBigInteger('room_id')->nullable();
             $table->longText('message')->nullable();
-            $table->string('image')->nullable();
+            $table->longText('images')->nullable();
             $table->timestamps();
         });
     }

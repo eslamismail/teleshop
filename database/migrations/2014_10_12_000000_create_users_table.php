@@ -20,10 +20,6 @@ class CreateUsersTable extends Migration
             $table->string('mobile')->nullable();
             $table->text('fcm_token')->nullable();
             $table->string('profile_picture')->nullable();
-            $table->timestamp('subscribed_at')->nullable();
-            $table->timestamp('subscription_end_at')->nullable();
-            $table->integer('subscription_days')->nullable();
-            $table->unsignedBigInteger('subscription_id')->nullable();
             $table->enum('type', ['user', 'vendor'])->default('user');
             $table->date('birthdate')->nullable();
             $table->string('email')->unique()->nullable();
