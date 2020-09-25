@@ -7,9 +7,10 @@
           type="text"
           class="write_msg"
           placeholder="Type a message"
-          id="message"
+          name="message"
           autocomplete="off"
         />
+        <input type="file" name="image" />
         <button class="msg_send_btn" type="submit">
           <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
         </button>
@@ -51,14 +52,16 @@ export default {
       });
     },
     async sendMessage() {
+      let beforeForm = event.target;
       let form = new FormData(event.target);
-
       try {
         await axios.post(`/rooms/${this.roomID}/message`, form);
         this.errors = {
           message: [],
         };
+        beforeForm.reset();
       } catch (error) {
+        console.log("error", error);
         if (!error.response) {
           this.$notify({
             group: "foo",

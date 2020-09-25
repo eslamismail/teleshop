@@ -17,7 +17,7 @@ class CreateRoomMembersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('room_id')->nullable();
-            $table->enum('type', ['member', 'owner'])->default('member');
+            $table->enum('type', ['member','pending','invited','owner'])->default('member');
             $table->timestamps();
         });
     }

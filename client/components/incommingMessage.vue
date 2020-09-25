@@ -1,11 +1,16 @@
 <template>
   <div class="incoming_msg" v-if="user && message.sender_id != user.id">
     <div class="incoming_msg_img" v-if="message.sender">
-      <img :src="message.sender.profile_picture_url" alt="sunil" style="border-radius: 50%" />
+      <img
+        :src="message.sender.profile_picture_url"
+        alt="sunil"
+        style="border-radius: 50%"
+      />
     </div>
     <div class="received_msg">
       <div class="received_withd_msg">
         <p>{{ message.message }}</p>
+        <img v-for="(item, key) in message.images_url" :src="item" :key="key" />
         <span class="time_date">{{ created_at }}</span>
       </div>
     </div>
@@ -13,6 +18,8 @@
   <div v-else class="outgoing_msg">
     <div class="sent_msg">
       <p>{{ message.message }}</p>
+      <img v-for="(item, key) in message.images_url" :src="item" :key="key" />
+
       <span class="time_date">{{ created_at }}</span>
     </div>
   </div>
