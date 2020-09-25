@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\NewMessage;
 use App\Events\NewRoom;
+use App\Events\RoomUpdated;
 use App\Message;
 use App\Room;
 use App\RoomMember;
@@ -88,6 +89,7 @@ class RoomController extends Controller
             foreach ($messages as $message) {
                 $message->delete();
             }
+
             return response()->json([
                 'message' => 'room deleted by the admin',
             ], 404);
@@ -141,6 +143,10 @@ class RoomController extends Controller
         $message = Message::create($data);
         $message = Message::with('sender')->find($message->id);
         broadcast(new NewMessage($message));
+        $members = RoomMember::where('room_id', $id)->get();
+        foreach ($members as $member) {
+            broadcast(new RoomUpdated($member));
+        }
         return response()->json([
             'message' => 'message sent successfully',
         ]);

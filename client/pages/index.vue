@@ -28,6 +28,7 @@
                 :room="item"
                 :key="index"
                 @active="setActive"
+                :active="room && room.id == item.id ? true : false"
               />
             </div>
           </div>
@@ -41,8 +42,25 @@
                 />
               </div>
             </div>
-            <div v-else class="msg_history align-content-center d-flex">
-              <div class="col-12 text-center">no message to show</div>
+            <div
+              class="msg_history align-items-center d-flex"
+              v-else-if="messages.length == 0 && room != null"
+            >
+              <div class="col-12 text-center">
+                <img
+                  src="https://scontent.fcai20-2.fna.fbcdn.net/v/t1.0-9/25956_505071682877248_1469610775_n.jpg?_nc_cat=100&_nc_sid=09cbfe&_nc_ohc=GMrvtZ6vaMQAX9jxODH&_nc_ht=scontent.fcai20-2.fna&oh=7d6a1a623fc2127aab96d6a80ec9ac8d&oe=5F93421E"
+                  alt=""
+                />
+              </div>
+            </div>
+            <div v-else class="msg_history align-items-center d-flex">
+              <div class="col-12 text-center">
+                <img
+                  width="30%"
+                  src="https://previews.123rf.com/images/get4net/get4net1812/get4net181200729/127169830-empty-inbox-tray.jpg"
+                  alt=""
+                />
+              </div>
             </div>
             <div class="typing">{{ typing }}</div>
             <send-message :roomID="room.id" v-if="room" />
@@ -55,15 +73,15 @@
 <script>
 import chatList from "../components/chatList";
 import incomming from "../components/incommingMessage";
-import outgoing from "../components/outgoing";
 import sendMessage from "../components/sendMessage";
 import AddUser from "../components/addUser";
+const underscore = require("underscore");
+const moment = require("moment");
 export default {
   middleware: "auth",
   components: {
     chatList,
     incomming,
-    outgoing,
     sendMessage,
     AddUser,
   },
@@ -94,25 +112,24 @@ export default {
     },
   },
   created() {
-    Echo.private(`room-${this.user.id}`).listen("NewRoom", (e) => {
-      this.rooms.unshift(e.room);
-    });
+    Echo.private(`room-${this.user.id}`)
+      .listen("NewRoom", (e) => {
+        this.rooms.unshift(e.room);
+      })
+      .listen("RoomUpdated", (e) => {
+        this.rooms.forEach((item) => {
+          if (item.id == e.room.id) {
+            item.message_send_at = e.room.message_send_at;
+            item.last_message = e.room.last_message;
+          }
+        });
+        this.rooms = underscore.sortBy(this.rooms, (item) => {
+          return -moment(item.message_send_at).valueOf();
+        });
+      });
   },
   mounted() {
     this.getRooms();
-    let elements = document.getElementsByClassName("active_chat");
-    const x = setInterval(() => {
-      if (elements[0] && this.room == null) {
-        for (let index = 0; index < elements.length; index++) {
-          const element = elements[index];
-          element.classList.remove("active_chat");
-        }
-        clearInterval(x);
-      }
-      setTimeout(() => {
-        clearInterval(x);
-      }, 5000);
-    }, 100);
   },
   methods: {
     scrollDown() {
@@ -125,25 +142,13 @@ export default {
       }, 100);
     },
     setActive(id) {
-      let elements = document.getElementsByClassName("chat_list");
+      // let elements = document.getElementsByClassName("chat_list");
       if (this.room) {
         this.leavePrivate(this.room.id);
       }
       this.scrollDown();
       this.room = this.rooms.find((item) => item.id == id);
       this.selectedRoom = true;
-      for (let index = 0; index < elements.length; index++) {
-        const element = elements[index];
-        element.classList.remove("active_chat");
-      }
-      let x = setInterval(() => {
-        if (document.getElementById(`chat_list_${id}`)) {
-          document
-            .getElementById(`chat_list_${id}`)
-            .classList.add("active_chat");
-          clearInterval(x);
-        }
-      }, 100);
       if (
         (this.messages.length > 0 &&
           this.messages[0].room_id == this.room.id) ||
@@ -168,8 +173,9 @@ export default {
         })
         .listen("NewMessage", (e) => {
           this.messages.push(e.message);
-          this.room.message_send_at = e.message.created_at;
-          this.room.last_message = e.message.message;
+          this.rooms = underscore.sortBy(this.rooms, (item) => {
+            return -moment(item.message_send_at).valueOf();
+          });
         });
     },
     leavePrivate(id) {
@@ -207,8 +213,11 @@ export default {
     async getRooms() {
       try {
         let response = await axios.get("/rooms");
-        this.rooms = response.data.rooms;
+        this.rooms = underscore.sortBy(response.data.rooms, (item) => {
+          return -moment(item.message_send_at).valueOf();
+        });
       } catch (error) {
+        console.log(error);
         if (!error.response) {
           this.$notify({
             group: "foo",

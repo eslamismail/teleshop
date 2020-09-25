@@ -13,7 +13,11 @@
       <button class="msg_send_btn" @click.prevent="sendMessage" type="button">
         <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
       </button>
-      <error v-for="(item, index) in errors.message" :error="item" :key="index" />
+      <error
+        v-for="(item, index) in errors.message"
+        :error="item"
+        :key="index"
+      />
     </div>
   </div>
 </template>
