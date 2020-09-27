@@ -6,9 +6,10 @@
       style="height: 50px; cursor: pointer"
       onclick="showProfileSettings()"
       id="display-pic"
+      v-if="user"
       :src="user.profile_picture_url"
     />
-    <div class="text-white font-weight-bold" id="username">
+    <div v-if="user" class="text-white font-weight-bold" id="username">
       {{ user.full_name }}
     </div>
     <div class="nav-item dropdown ml-auto">
@@ -29,7 +30,7 @@
         <a class="dropdown-item" href="#">Archived</a>
         <a class="dropdown-item" href="#">Starred</a>
         <a class="dropdown-item" href="#">Settings</a>
-    
+
       </div> -->
     </div>
   </div>

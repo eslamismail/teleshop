@@ -14,12 +14,13 @@
           >
             <div class="justify-content-between col-12">
               <img
+                v-if="user"
                 :src="user.profile_picture_url"
                 width="20%"
                 class="img-thumbnail"
                 alt=""
               />
-              <div class="d-inline">{{ user.full_name }}</div>
+              <div v-if="user" class="d-inline">{{ user.full_name }}</div>
             </div>
           </div>
         </div>
