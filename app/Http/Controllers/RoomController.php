@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewMessage;
-use App\Events\NewRoom;
 use App\Events\RoomUpdated;
 use App\Message;
 use App\Room;
 use App\RoomMember;
 use Illuminate\Http\Request;
 use Storage;
+
 class RoomController extends Controller
 {
     /**
@@ -64,12 +63,10 @@ class RoomController extends Controller
         $members->user_id = $request->user_id;
         $members->room_id = $room->id;
         $members->save();
-        broadcast(new NewRoom($members));
         $members = new RoomMember();
         $members->user_id = auth()->id();
         $members->room_id = $room->id;
         $members->save();
-        broadcast(new NewRoom($members));
         return response()->json(['message' => 'room created successfully']);
     }
 
@@ -138,15 +135,14 @@ class RoomController extends Controller
         ]);
 
         $data = $request->only(['message']);
-        if($request->has('image')){
-            $image = [Storage::disk('uploads')->put('messages',$request->image)];
+        if ($request->has('image')) {
+            $image = [Storage::disk('uploads')->put('messages', $request->image)];
             $data['images'] = json_encode($image);
         }
         $data['sender_id'] = auth()->id();
         $data['room_id'] = $id;
         $message = Message::create($data);
         $message = Message::with('sender')->find($message->id);
-        broadcast(new NewMessage($message));
         $members = RoomMember::where('room_id', $id)->get();
         foreach ($members as $member) {
             broadcast(new RoomUpdated($member));

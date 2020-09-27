@@ -22,7 +22,18 @@ export const mutations = {
   },
   addMessage: (state, message) => {
     state.messages.push(message);
-    state.activeRoom.message_send_at = message.created_at;
-    state.activeRoom.last_message = message.message;
+    // state.activeRoom.message_send_at = message.created_at;
+    // state.activeRoom.last_message = message.message;
+  },
+  updateLastMessage: (state, room) => {
+    state.rooms.forEach(item => {
+      if (item.id == room.id) {
+        item.message_send_at = room.message_send_at;
+        item.last_message = room.last_message;
+      }
+    });
+    state.rooms = underscore.sortBy(state.rooms, item => {
+      return -moment(item.message_send_at).valueOf();
+    });
   }
 };

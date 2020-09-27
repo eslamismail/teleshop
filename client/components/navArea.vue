@@ -12,7 +12,10 @@
       {{ user.full_name }}
     </div>
     <div class="nav-item dropdown ml-auto">
-      <a
+      <a class="dropdown-item" @click.prevent="getUsers()" href="#">New Chat</a>
+      <a class="dropdown-item" @click.prevent="logout" href="#">Log Out</a>
+      <users-modal :users="users" />
+      <!-- <a
         class="nav-link dropdown-toggle"
         data-toggle="dropdown"
         href="#"
@@ -22,17 +25,26 @@
         ><i class="fas fa-ellipsis-v text-white"></i
       ></a>
       <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#">New Group</a>
+        <a class="dropdown-item" @click.prevent="getUsers" href="#">New Chat</a>
         <a class="dropdown-item" href="#">Archived</a>
         <a class="dropdown-item" href="#">Starred</a>
         <a class="dropdown-item" href="#">Settings</a>
-        <a class="dropdown-item" @click.prevent="logout" href="#">Log Out</a>
-      </div>
+    
+      </div> -->
     </div>
   </div>
 </template>
 <script>
+import usersModal from "./usersModal";
 export default {
+  components: {
+    usersModal,
+  },
+  data() {
+    return {
+      users: [],
+    };
+  },
   computed: {
     user() {
       return this.$store.state.login.user;
@@ -44,6 +56,45 @@ export default {
         await axios.post("/logout");
       } catch (error) {}
       this.$store.commit("login/logout", {});
+    },
+    async getUsers() {
+      try {
+        let response = await axios.get("/users");
+        this.users = response.data.users;
+        if (this.users.length == 0) {
+          this.$notify({
+            group: "foo",
+            text: `No users found`,
+            type: "error",
+          });
+          return false;
+        }
+        $("#users-modal").modal("show");
+      } catch (error) {
+        console.log(error);
+        if (!error.response) {
+          this.$notify({
+            group: "foo",
+            text: `No internet access`,
+            type: "error",
+          });
+        } else if (error.response.status == 401) {
+          let { message } = error.response.data;
+          this.$notify({
+            group: "foo",
+            text: message,
+            type: "error",
+          });
+          $nuxt.$store.commit("login/logout", {});
+        } else {
+          let { message } = error.response.data;
+          this.$notify({
+            group: "foo",
+            text: message,
+            type: "error",
+          });
+        }
+      }
     },
   },
 };

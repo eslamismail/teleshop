@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Events\NewMessage;
+use broadcast;
 use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
@@ -12,7 +14,15 @@ class Message extends Model
         'sender_id',
         'images',
     ];
+    public static function boot()
+    {
+        parent::boot();
+        static::created(function ($item) {
+            $message = Message::with('sender')->find($item->id);
+            broadcast(new NewMessage($message));
 
+        });
+    }
     protected $hidden = [
         'images',
     ];

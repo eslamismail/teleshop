@@ -65,9 +65,13 @@ export default {
     this.getRooms();
   },
   created() {
-    Echo.private(`room-${this.user.id}`).listen("NewRoom", (e) => {
-      this.$store.commit("chat/addRoom", e.room);
-    });
+    Echo.private(`room-${this.user.id}`)
+      .listen("NewRoom", (e) => {
+        this.$store.commit("chat/addRoom", e.room);
+      })
+      .listen("RoomUpdated", (e) => {
+        this.$store.commit("chat/updateLastMessage", e.room);
+      });
   },
   computed: {
     user() {
