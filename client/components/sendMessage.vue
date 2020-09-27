@@ -1,67 +1,42 @@
 <template>
-  <div class="type_msg">
-    <div class="input_msg_write">
-      <form @submit.prevent="sendMessage">
-        <input
-          @keypress="typing"
-          type="text"
-          class="write_msg"
-          placeholder="Type a message"
-          name="message"
-          autocomplete="off"
-        />
-        <input type="file" name="image" />
-        <button class="msg_send_btn" type="submit">
-          <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-        </button>
-      </form>
-      <error
-        v-for="(item, index) in errors.message"
-        :error="item"
-        :key="index"
+  <form @submit.prevent="sendMessage()" autocomplete="off" id="send-message">
+    <div
+      class="justify-self-end align-items-center flex-row d-flex"
+      id="input-area"
+    >
+      <a href="#"
+        ><i class="far fa-smile text-muted px-3" style="font-size: 1.5rem"></i
+      ></a>
+      <input
+        type="text"
+        name="message"
+        id="input"
+        placeholder="Type a message"
+        class="flex-grow-1 border-0 px-3 py-2 my-3 rounded shadow-sm"
       />
+      <i
+        class="fas fa-paper-plane text-muted px-3"
+        @click.prevent="sendMessage"
+        style="cursor: pointer"
+      ></i>
     </div>
-  </div>
+  </form>
 </template>
 <script>
-import Error from "../components/public/error";
 export default {
-  components: { Error },
-  props: {
-    roomID: {
-      type: Number,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      errors: {
-        message: [],
-      },
-    };
-  },
   computed: {
-    user() {
-      return this.$store.state.login.user;
+    room() {
+      return this.$store.state.chat.activeRoom;
     },
   },
   methods: {
-    typing() {
-      Echo.private(`chat-${this.roomID}`).whisper("typing", {
-        user: this.user,
-      });
-    },
     async sendMessage() {
-      let beforeForm = event.target;
-      let form = new FormData(event.target);
       try {
-        await axios.post(`/rooms/${this.roomID}/message`, form);
-        this.errors = {
-          message: [],
-        };
-        beforeForm.reset();
+        let element = document.getElementById("send-message");
+        let form = new FormData(element);
+        await axios.post(`rooms/${this.room.id}/message`, form);
+        element.reset();
       } catch (error) {
-        console.log("error", error);
         if (!error.response) {
           this.$notify({
             group: "foo",
@@ -69,7 +44,6 @@ export default {
             type: "error",
           });
         } else if (error.response.status == 422) {
-          this.errors = error.response.data.errors;
           let { message } = error.response.data;
           this.$notify({
             group: "foo",
