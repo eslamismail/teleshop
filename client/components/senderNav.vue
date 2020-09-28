@@ -20,7 +20,7 @@
         {{ room.room_name }}
       </div>
       <div class="text-white small" id="details">
-        {{ created_at }}
+        {{ typing ? typing : created_at }}
       </div>
     </div>
     <div class="d-flex flex-row align-items-center ml-auto">
@@ -45,6 +45,9 @@ export default {
   computed: {
     room() {
       return this.$store.state.chat.activeRoom;
+    },
+    typing() {
+      return this.$store.state.chat.typing;
     },
   },
   data() {

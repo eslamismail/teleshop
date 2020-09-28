@@ -22,6 +22,9 @@ export default {
     activeRoom() {
       return this.$store.state.chat.activeRoom;
     },
+    user() {
+      return this.$store.state.login.user;
+    },
   },
   methods: {
     solveDate(date) {
@@ -65,9 +68,19 @@ export default {
       }
     },
     openSocket() {
-      Echo.private(`chat-${this.activeRoom.id}`).listen("NewMessage", (e) => {
-        this.$store.commit("chat/addMessage", e.message);
-      });
+      Echo.private(`chat-${this.activeRoom.id}`)
+        .listen("NewMessage", (e) => {
+          this.$store.commit("chat/addMessage", e.message);
+        })
+        .listenForWhisper("typing", (e) => {
+          if (this.user.id != e.user.id) {
+            let text = `${e.user.full_name} typing ...`;
+            this.$store.commit("chat/type", text);
+            setTimeout(() => {
+              this.$store.commit("chat/type", null);
+            }, 1000);
+          }
+        });
     },
     leaveSocket() {
       Echo.leave(`chat-${this.activeRoom.id}`);

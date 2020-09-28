@@ -14,7 +14,7 @@
     <div class="w-50">
       <div class="name">{{ room.room_name }}</div>
       <div class="small last-message">
-        {{ room.last_message }}
+        {{ typing && activeRoom.id == room.id ? typing : room.last_message }}
       </div>
     </div>
     <div class="flex-grow-1 text-right">
@@ -39,6 +39,9 @@ export default {
   computed: {
     activeRoom() {
       return this.$store.state.chat.activeRoom;
+    },
+    typing() {
+      return this.$store.state.chat.typing;
     },
   },
   mounted() {

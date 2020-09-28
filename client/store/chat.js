@@ -1,7 +1,8 @@
 export const state = () => ({
   rooms: [],
   activeRoom: {},
-  messages: []
+  messages: [],
+  typing: null
 });
 const underscore = require("underscore");
 const moment = require("moment");
@@ -38,5 +39,8 @@ export const mutations = {
     state.rooms = [];
     state.activeRoom = {};
     state.messages = [];
+  },
+  type(state, text) {
+    state.typing = text;
   }
 };
