@@ -33,6 +33,9 @@
       <a href="#">
         <i class="fas fa-ellipsis-v mr-2 mx-sm-3 text-white"></i>
       </a>
+      <a href="#" @click.prevent="exitRoom()">
+        <i class="fas fa-times mr-2 mx-sm-3 text-white"></i>
+      </a>
     </div>
   </div>
 </template>
@@ -71,6 +74,10 @@ export default {
           clearInterval(this.interval);
         }
       }, 100);
+    },
+    exitRoom() {
+      Echo.leave(`chat-${this.room.id}`);
+      this.$store.commit("chat/setActive", {});
     },
   },
 };

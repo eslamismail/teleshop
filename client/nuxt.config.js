@@ -30,28 +30,31 @@ export default {
       }
     ],
     link: [
-      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       {
-        rel: "stylesheet",
         href:
-          "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          "https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css",
+        rel: "StyleSheet"
+      },
+      {
+        href: "https://use.fontawesome.com/releases/v5.0.10/css/all.css",
+        rel: "StyleSheet"
+      },
+      {
+        href: "/whats/style.css",
+        rel: "StyleSheet"
       }
     ],
     script: [
-      { src: "https://code.jquery.com/jquery-3.5.1.slim.min.js", body: true },
+      { src: "https://code.jquery.com/jquery-3.3.1.slim.min.js", body: true },
       {
         src:
-          "https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js",
+          "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js",
         body: true
       },
       {
         src:
-          "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js",
+          "https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js",
         body: true
-      },
-      {
-        src: "https://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js",
-        async: "async"
       }
     ]
   },

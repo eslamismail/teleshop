@@ -3,7 +3,12 @@
     class="d-none d-sm-flex flex-column col-12 col-sm-7 col-md-8 p-0 h-100"
     id="message-area"
   >
-    <div v-if="!activeRoom.id" class="w-100 h-100 overlay d-flex"></div>
+    <div
+      v-if="!activeRoom.id"
+      class="w-100 h-100 overlay d-flex align-items-center justify-content-center"
+    >
+      <h2 class="text-capitalize">no message to show</h2>
+    </div>
 
     <!-- Navbar -->
     <sender-nav />

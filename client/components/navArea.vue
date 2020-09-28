@@ -13,10 +13,8 @@
       {{ user.full_name }}
     </div>
     <div class="nav-item dropdown ml-auto">
-      <a class="dropdown-item" @click.prevent="getUsers()" href="#">New Chat</a>
-      <a class="dropdown-item" @click.prevent="logout" href="#">Log Out</a>
       <users-modal :users="users" />
-      <!-- <a
+      <a
         class="nav-link dropdown-toggle"
         data-toggle="dropdown"
         href="#"
@@ -26,12 +24,14 @@
         ><i class="fas fa-ellipsis-v text-white"></i
       ></a>
       <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" @click.prevent="getUsers" href="#">New Chat</a>
+        <a class="dropdown-item" @click.prevent="getUsers()" href="#"
+          >New Chat</a
+        >
         <a class="dropdown-item" href="#">Archived</a>
         <a class="dropdown-item" href="#">Starred</a>
         <a class="dropdown-item" href="#">Settings</a>
-
-      </div> -->
+        <a class="dropdown-item" @click.prevent="logout" href="#">Log Out</a>
+      </div>
     </div>
   </div>
 </template>
