@@ -11,7 +11,7 @@
     </div>
 
     <!-- Navbar -->
-    <sender-nav />
+    <sender-nav v-if="activeRoom.id" />
 
     <!-- Messages -->
     <div class="d-flex flex-column" id="messages">

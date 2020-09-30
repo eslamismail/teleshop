@@ -30,6 +30,12 @@ export default {
     solveDate(date) {
       return moment(date).calendar();
     },
+    resetForm() {
+      let form = document.getElementById("send-message");
+      if (form) {
+        form.reset();
+      }
+    },
     async setActive(room) {
       if (room.id == this.activeRoom.id) {
         return false;
@@ -40,6 +46,7 @@ export default {
         const { messages } = response.data;
         this.$store.commit("chat/setMessages", messages);
         this.$store.commit("chat/setActive", room);
+        this.resetForm();
         this.openSocket();
       } catch (error) {
         console.log(error);

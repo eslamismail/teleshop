@@ -59,7 +59,9 @@ export default {
         } else if (hours <= 7 * 24) {
           this.created_at = moment(this.room.message_send_at).calendar();
         } else {
-          this.created_at = moment(this.room.message_send_at).format("llll");
+          this.created_at = moment(this.room.message_send_at).format(
+            "YYYY-MMM-DD hh:mm a"
+          );
           clearInterval(this.interval);
         }
       }, 100);

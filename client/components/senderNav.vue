@@ -72,7 +72,7 @@ export default {
           this.created_at = moment(this.room.message_send_at).calendar();
         } else {
           this.created_at = moment(this.room.message_send_at).format(
-            "YYYY MMM DD | hh:mm:ss a"
+            "YYYY-MMM-DD hh:mm a"
           );
           clearInterval(this.interval);
         }

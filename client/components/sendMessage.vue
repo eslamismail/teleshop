@@ -1,9 +1,9 @@
 <template>
   <form @submit.prevent="sendMessage()" autocomplete="off" id="send-message">
     <picker
+      v-if="emoji"
       id="emojione"
-      class="d-none"
-      style="width: 100%"
+      class="w-100"
       set="emojione"
       @select="select"
     />
@@ -11,7 +11,7 @@
       class="justify-self-end align-items-center flex-row d-flex"
       id="input-area"
     >
-      <a href="#" @click="setEmoji()"
+      <a href="#" @click.prevent="setEmoji()"
         ><i class="far fa-smile text-muted px-3" style="font-size: 1.5rem"></i
       ></a>
       <input
@@ -20,8 +20,7 @@
         id="input"
         placeholder="Type a message"
         class="flex-grow-1 border-0 px-3 py-2 my-3 rounded shadow-sm"
-        @keypress="typing()"
-        @keypress.enter="sendMessage"
+        @change="typing()"
       />
       <i
         class="fas fa-paper-plane text-muted px-3"
@@ -33,7 +32,6 @@
 </template>
 <script>
 import { Picker } from "emoji-mart-vue";
-
 export default {
   components: { Picker },
   computed: {
@@ -44,6 +42,12 @@ export default {
       return this.$store.state.login.user;
     },
   },
+  data() {
+    return {
+      emoji: false,
+    };
+  },
+
   methods: {
     select(item) {
       // console.log(item.native);
@@ -51,8 +55,11 @@ export default {
       document.getElementById("input").value = value + item.native;
     },
     setEmoji() {
-      document.getElementById("emojione").classList.remove("d-none");
-      document.getElementById("emojione").classList.add("d-flex");
+      if (this.emoji) {
+        this.emoji = false;
+      } else {
+        this.emoji = true;
+      }
     },
 
     async sendMessage() {
@@ -101,8 +108,7 @@ export default {
       }
     },
     typing() {
-      document.getElementById("emojione").classList.remove("d-flex");
-      document.getElementById("emojione").classList.add("d-none");
+      this.emoji = false;
       Echo.private(`chat-${this.room.id}`).whisper("typing", {
         user: this.user,
       });
