@@ -1,7 +1,8 @@
 export const state = () => ({
   rooms: [],
   activeRoom: {},
-  messages: []
+  messages: [],
+  typing: null
 });
 const underscore = require("underscore");
 const moment = require("moment");
@@ -22,8 +23,6 @@ export const mutations = {
   },
   addMessage: (state, message) => {
     state.messages.push(message);
-    // state.activeRoom.message_send_at = message.created_at;
-    // state.activeRoom.last_message = message.message;
   },
   updateLastMessage: (state, room) => {
     state.rooms.forEach(item => {
@@ -35,5 +34,13 @@ export const mutations = {
     state.rooms = underscore.sortBy(state.rooms, item => {
       return -moment(item.message_send_at).valueOf();
     });
+  },
+  resetData: (state, payload = {}) => {
+    state.rooms = [];
+    state.activeRoom = {};
+    state.messages = [];
+  },
+  type(state, text) {
+    state.typing = text;
   }
 };

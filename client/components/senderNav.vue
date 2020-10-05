@@ -20,7 +20,7 @@
         {{ room.room_name }}
       </div>
       <div class="text-white small" id="details">
-        {{ created_at }}
+        {{ typing ? typing : created_at }}
       </div>
     </div>
     <div class="d-flex flex-row align-items-center ml-auto">
@@ -33,6 +33,9 @@
       <a href="#">
         <i class="fas fa-ellipsis-v mr-2 mx-sm-3 text-white"></i>
       </a>
+      <a href="#" @click.prevent="exitRoom()">
+        <i class="fas fa-times mr-2 mx-sm-3 text-white"></i>
+      </a>
     </div>
   </div>
 </template>
@@ -42,6 +45,9 @@ export default {
   computed: {
     room() {
       return this.$store.state.chat.activeRoom;
+    },
+    typing() {
+      return this.$store.state.chat.typing;
     },
   },
   data() {
@@ -66,11 +72,15 @@ export default {
           this.created_at = moment(this.room.message_send_at).calendar();
         } else {
           this.created_at = moment(this.room.message_send_at).format(
-            "YYYY MMM DD | hh:mm:ss a"
+            "YYYY-MMM-DD hh:mm a"
           );
           clearInterval(this.interval);
         }
       }, 100);
+    },
+    exitRoom() {
+      Echo.leave(`chat-${this.room.id}`);
+      this.$store.commit("chat/setActive", {});
     },
   },
 };

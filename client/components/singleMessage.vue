@@ -4,36 +4,36 @@
     v-if="user.id != message.sender.id"
   >
     <div class="options">
-      <a href="#"><i class="fas fa-angle-down text-muted px-2"></i></a>
+      <a href="#">
+        <i class="fas fa-angle-down text-muted px-2"></i>
+      </a>
     </div>
+    <div
+      class="small font-weight-bold text-primary"
+      v-if="message.sender"
+    >{{message.sender.full_name}}</div>
 
     <div class="d-flex flex-row">
       <div class="body m-1 mr-2">{{ message.message }}</div>
       <div
         class="time ml-auto small text-right flex-shrink-0 align-self-end text-muted"
         style="width: 75px"
-      >
-        {{ created_at }}
-      </div>
+      >{{ created_at }}</div>
     </div>
   </div>
 
-  <div
-    class="align-self-end self p-1 my-1 mx-3 rounded bg-white shadow-sm message-item"
-    v-else
-  >
+  <div class="align-self-end self p-1 my-1 mx-3 rounded bg-white shadow-sm message-item" v-else>
     <div class="options">
-      <a href="#"><i class="fas fa-angle-down text-muted px-2"></i></a>
+      <a href="#">
+        <i class="fas fa-angle-down text-muted px-2"></i>
+      </a>
     </div>
-
     <div class="d-flex flex-row">
       <div class="body m-1 mr-2">{{ message.message }}</div>
       <div
         class="time ml-auto small text-right flex-shrink-0 align-self-end text-muted"
         style="width: 75px"
-      >
-        {{ created_at }}
-      </div>
+      >{{ created_at }}</div>
     </div>
   </div>
 </template>
@@ -75,7 +75,9 @@ export default {
         } else if (hours <= 7 * 24) {
           this.created_at = moment(this.message.created_at).calendar();
         } else {
-          this.created_at = moment(this.message.created_at).format("llll");
+          this.created_at = moment(this.message.created_at).format(
+            "YYYY-MMM-DD hh:mm a"
+          );
           clearInterval(this.interval);
         }
       }, 100);

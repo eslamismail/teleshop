@@ -16,6 +16,7 @@
         "axios": "^0.19.2",
         "css-loader": "^3.5.3",
         "dotenv": "^8.2.0",
+        "emoji-mart-vue": "^2.6.6",
         "fs-extra": "^9.0.0",
         "less-loader": "^6.1.0",
         "moment": "^2.25.3",

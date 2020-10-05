@@ -26,5 +26,6 @@ export const mutations = {
     axios.defaults.headers.authorization = `Bearer ${data.access_token}`;
     window.localStorage.removeItem("token");
     $nuxt.$router.push("/login");
+    $nuxt.$store.commit("chat/resetData", {});
   }
 };

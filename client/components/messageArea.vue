@@ -3,10 +3,15 @@
     class="d-none d-sm-flex flex-column col-12 col-sm-7 col-md-8 p-0 h-100"
     id="message-area"
   >
-    <div v-if="!activeRoom.id" class="w-100 h-100 overlay d-flex"></div>
+    <div
+      v-if="!activeRoom.id"
+      class="w-100 h-100 overlay d-flex align-items-center justify-content-center"
+    >
+      <h2 class="text-capitalize">no message to show</h2>
+    </div>
 
     <!-- Navbar -->
-    <sender-nav />
+    <sender-nav v-if="activeRoom.id" />
 
     <!-- Messages -->
     <div class="d-flex flex-column" id="messages">
@@ -37,27 +42,7 @@ export default {
     activeRoom() {
       return this.$store.state.chat.activeRoom;
     },
-    mounted() {
-      setTimeout(() => {
-        var mywindow = window.open("", "PRINT", "height=400,width=600");
-
-        mywindow.document.write(
-          "<html><head><title>" + document.title + "</title>"
-        );
-        mywindow.document.write("</head><body >");
-        mywindow.document.write("<h1>" + document.title + "</h1>");
-        mywindow.document.write(document.getElementById("messages").innerHTML);
-        mywindow.document.write("</body></html>");
-
-        mywindow.document.close(); // necessary for IE >= 10
-        mywindow.focus(); // necessary for IE >= 10*/
-
-        mywindow.print();
-        mywindow.close();
-
-        return true;
-      }, 5000);
-    },
+    mounted() {},
   },
 };
 </script>

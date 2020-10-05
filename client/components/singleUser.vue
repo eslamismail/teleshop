@@ -14,7 +14,7 @@
     <div class="w-50">
       <div class="name">{{ room.room_name }}</div>
       <div class="small last-message">
-        {{ room.last_message }}
+        {{ typing && activeRoom.id == room.id ? typing : room.last_message }}
       </div>
     </div>
     <div class="flex-grow-1 text-right">
@@ -40,6 +40,9 @@ export default {
     activeRoom() {
       return this.$store.state.chat.activeRoom;
     },
+    typing() {
+      return this.$store.state.chat.typing;
+    },
   },
   mounted() {
     this.solveDate();
@@ -56,7 +59,9 @@ export default {
         } else if (hours <= 7 * 24) {
           this.created_at = moment(this.room.message_send_at).calendar();
         } else {
-          this.created_at = moment(this.room.message_send_at).format("llll");
+          this.created_at = moment(this.room.message_send_at).format(
+            "YYYY-MMM-DD hh:mm a"
+          );
           clearInterval(this.interval);
         }
       }, 100);
