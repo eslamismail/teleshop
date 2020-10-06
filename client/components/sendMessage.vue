@@ -1,26 +1,17 @@
 <template>
   <form @submit.prevent="sendMessage()" autocomplete="off" id="send-message">
-    <picker
-      v-if="emoji"
-      id="emojione"
-      class="w-100"
-      set="emojione"
-      @select="select"
-    />
-    <div
-      class="justify-self-end align-items-center flex-row d-flex"
-      id="input-area"
-    >
-      <a href="#" @click.prevent="setEmoji()"
-        ><i class="far fa-smile text-muted px-3" style="font-size: 1.5rem"></i
-      ></a>
+    <picker v-if="emoji" id="emojione" class="w-100" set="emojione" @select="select" />
+    <div class="justify-self-end align-items-center flex-row d-flex" id="input-area">
+      <a href="#" @click.prevent="setEmoji()">
+        <i class="far fa-smile text-muted px-3" style="font-size: 1.5rem"></i>
+      </a>
       <input
         type="text"
         name="message"
         id="input"
         placeholder="Type a message"
         class="flex-grow-1 border-0 px-3 py-2 my-3 rounded shadow-sm"
-        @change="typing()"
+        @keypress="typing()"
       />
       <i
         class="fas fa-paper-plane text-muted px-3"

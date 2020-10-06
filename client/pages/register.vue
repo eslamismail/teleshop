@@ -9,9 +9,7 @@
         >
           <div class="text-center col-md-12 col-12 col-lg-12">
             <div class="row justify-content-center">
-              <div class="col-md-5 col-lg-5 col-5">
-                <img :src="app_logo" alt class="img-fluid" />
-              </div>
+              <div class="col-md-5 col-lg-5 col-5"></div>
             </div>
           </div>
           <div class="form-group row">
@@ -88,7 +86,7 @@
           <div class="form-group row">
             <div class="col-md-12 justify-content-between">
               <div class="mt-2">
-                <button class="btn btn-warning text-brand">register</button>
+                <button class="btn btn-success text-brand">register</button>
               </div>
               <div class="mt-2">
                 <small>
@@ -185,45 +183,34 @@ export default {
   },
 };
 </script>
+
 <style  scoped>
+html,
 body {
   margin: 0;
   padding: 0;
 }
-html {
-  margin: 0;
-  padding: 0;
-}
 #body {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
-  overflow: auto;
-  background: #f5cb04;
-  height: 100%;
+  background: #67be4a;
   display: flex;
+  min-height: 100vh;
+  align-items: center;
   margin: 0;
   padding: 0;
 }
-
 .brand-link {
   color: #838071;
 }
-
 label {
   color: #838071;
-  text-transform: capitalize;
 }
-
 .form-control {
   color: #838071;
 }
-
 .card {
   border-radius: 20px !important;
 }
-
 .text-brand {
   font-weight: bold;
   color: #fefefe;
