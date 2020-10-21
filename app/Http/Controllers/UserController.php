@@ -26,6 +26,14 @@ class UserController extends Controller
         ]);
     }
 
+    public function all()
+    {
+        $users = User::where('id', '!=', auth()->id())->get();
+        return response()->json([
+            'users' => $users,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
