@@ -56,7 +56,6 @@ export default {
         const { rooms } = response.data;
         this.$store.commit("chat/createRooms", rooms);
       } catch (error) {
-        console.log(error);
         if (!error.response) {
           this.$notify({
             group: "foo",
