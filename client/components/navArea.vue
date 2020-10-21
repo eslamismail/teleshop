@@ -14,6 +14,8 @@
     </div>
     <div class="nav-item dropdown ml-auto">
       <users-modal :users="users" />
+
+      <group-modal :users="users" />
       <a
         class="nav-link dropdown-toggle"
         data-toggle="dropdown"
@@ -21,13 +23,16 @@
         role="button"
         aria-haspopup="true"
         aria-expanded="false"
-        ><i class="fas fa-ellipsis-v text-white"></i
-      ></a>
+      >
+        <i class="fas fa-ellipsis-v text-white"></i>
+      </a>
       <div class="dropdown-menu dropdown-menu-right">
         <a class="dropdown-item" @click.prevent="getUsers()" href="#"
           >New Chat</a
         >
-        <a class="dropdown-item" href="#">Archived</a>
+        <a class="dropdown-item" @click.prevent="getGroup()" href="#"
+          >New Group</a
+        >
         <a class="dropdown-item" href="#">Starred</a>
         <a class="dropdown-item" href="#">Settings</a>
         <a class="dropdown-item" @click.prevent="logout" href="#">Log Out</a>
@@ -37,9 +42,12 @@
 </template>
 <script>
 import usersModal from "./usersModal";
+import groupModal from "./groupModal";
+
 export default {
   components: {
     usersModal,
+    groupModal,
   },
   data() {
     return {
@@ -55,6 +63,7 @@ export default {
     async logout() {
       try {
         await axios.post("/logout");
+        this.$store.commit("login/logout", {});
       } catch (error) {}
       this.$store.commit("login/logout", {});
     },
@@ -71,6 +80,46 @@ export default {
           return false;
         }
         $("#users-modal").modal("show");
+      } catch (error) {
+        console.log(error);
+        if (!error.response) {
+          this.$notify({
+            group: "foo",
+            text: `No internet access`,
+            type: "error",
+          });
+        } else if (error.response.status == 401) {
+          let { message } = error.response.data;
+          this.$notify({
+            group: "foo",
+            text: message,
+            type: "error",
+          });
+          $nuxt.$store.commit("login/logout", {});
+        } else {
+          let { message } = error.response.data;
+          this.$notify({
+            group: "foo",
+            text: message,
+            type: "error",
+          });
+        }
+      }
+    },
+    async getGroup() {
+      try {
+        let response = await axios.get("/users/all");
+        this.users = response.data.users;
+        $("#group-modal").modal("show");
+        if (this.users.length == 0) {
+          this.$notify({
+            group: "foo",
+            text: `No users found`,
+            type: "error",
+          });
+          return false;
+        }
+        // $("#users-modal").modal("show");
       } catch (error) {
         console.log(error);
         if (!error.response) {

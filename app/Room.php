@@ -35,7 +35,7 @@ class Room extends Model
                 return $this->name;
             }
         } else {
-            return $this->name;
+            return $this->name ? $this->name : 'Group chat';
         }
     }
 

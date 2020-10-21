@@ -18,7 +18,7 @@
                 :src="user.profile_picture_url"
                 width="20%"
                 class="img-thumbnail"
-                alt=""
+                alt
               />
               <div v-if="user" class="d-inline">{{ user.full_name }}</div>
             </div>

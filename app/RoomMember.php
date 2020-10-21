@@ -13,7 +13,12 @@ class RoomMember extends Model
     {
         parent::boot();
         static::created(function ($item) {
-            broadcast(new NewRoom($item));
+            try {
+                broadcast(new NewRoom($item));
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+
         });
     }
     public function user()

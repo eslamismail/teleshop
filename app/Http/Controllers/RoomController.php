@@ -145,10 +145,48 @@ class RoomController extends Controller
         $message = Message::with('sender')->find($message->id);
         $members = RoomMember::where('room_id', $id)->get();
         foreach ($members as $member) {
-            broadcast(new RoomUpdated($member));
+            try {
+                broadcast(new RoomUpdated($member));
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
         }
         return response()->json([
             'message' => 'message sent successfully',
         ]);
+    }
+    public function storeGroup(Request $request)
+    {
+        $request->validate([
+            'users' => 'required|exists:users,id',
+        ]);
+
+        $users = $request->users;
+
+        $checkMember = Room::whereHas('members', function ($q) {
+            $q->where('user_id', auth()->id());
+        })->whereHas('members', function ($q) use ($users) {
+            $q->whereIn('user_id', $users);
+        })->where('type', 'group')
+            ->with('members')
+            ->first();
+
+        $room = new Room();
+        $room->type = 'group';
+        $room->save();
+
+        $members = new RoomMember();
+        $members->user_id = auth()->id();
+        $members->room_id = $room->id;
+        $members->save();
+        foreach ($users as $user) {
+            $members = new RoomMember();
+            $members->user_id = $user;
+            $members->room_id = $room->id;
+            $members->save();
+        }
+
+        return response()->json(['message' => 'room created successfully']);
+
     }
 }

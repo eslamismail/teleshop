@@ -1,6 +1,6 @@
 <template>
-  <div id="body" class="align-items-center">
-    <div class="container mt-5 mb-5">
+  <div id="body">
+    <div class="container mb-5">
       <div class="row justify-content-lg-end justify-content-md-center">
         <form
           class="col-md-8 col-12 col-lg-5 card card-body shadow-lg rounded p-5"
@@ -15,66 +15,33 @@
           <div class="form-group row">
             <label for="email" class="col-md-3 col-form-label">Email</label>
             <div class="col-md-9">
-              <input
-                type="email"
-                name="email"
-                id="email"
-                class="form-control"
-              />
-              <Error
-                v-for="(item, index) in errors.email"
-                :error="item"
-                :key="index"
-              />
+              <input type="email" name="email" id="email" class="form-control" />
+              <Error v-for="(item, index) in errors.email" :error="item" :key="index" />
             </div>
           </div>
           <div class="form-group row">
-            <label for="password" class="col-md-3 col-form-label"
-              >Password</label
-            >
+            <label for="password" class="col-md-3 col-form-label">Password</label>
             <div class="col-md-9">
-              <input
-                type="password"
-                name="password"
-                id="password"
-                class="form-control"
-              />
-              <Error
-                v-for="(item, index) in errors.password"
-                :error="item"
-                :key="index"
-              />
+              <input type="password" name="password" id="password" class="form-control" />
+              <Error v-for="(item, index) in errors.password" :error="item" :key="index" />
             </div>
           </div>
           <div class="form-group row">
             <div class="form-group form-check">
               <div class="col-md-12">
-                <input
-                  type="checkbox"
-                  name="remember_me"
-                  class="form-check-input"
-                  id="remember_me"
-                />
-                <label class="form-check-label" for="remember_me"
-                  >Remeber me</label
-                >
-                <Error
-                  v-for="(item, index) in errors.remember_me"
-                  :error="item"
-                  :key="index"
-                />
+                <input type="checkbox" name="remember_me" class="form-check-input" id="remember_me" />
+                <label class="form-check-label" for="remember_me">Remeber me</label>
+                <Error v-for="(item, index) in errors.remember_me" :error="item" :key="index" />
               </div>
             </div>
           </div>
           <div class="form-group row">
             <div class="col-md-12 justify-content-between">
-              <button class="btn btn-warning text-brand">login</button>
+              <button class="btn btn-success text-brand">login</button>
 
               <div class="mt-2">
                 <small>
-                  <nuxt-link class="brand-link" to="/register"
-                    >Need to create account</nuxt-link
-                  >
+                  <nuxt-link class="brand-link" to="/register">Need to create account</nuxt-link>
                 </small>
               </div>
             </div>
@@ -169,6 +136,7 @@ export default {
   },
 };
 </script>
+
 <style  scoped>
 html,
 body {
@@ -179,9 +147,10 @@ body {
   width: 100%;
   background: #67be4a;
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 .brand-link {
   color: #838071;

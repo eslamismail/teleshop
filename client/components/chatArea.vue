@@ -1,5 +1,5 @@
 <template>
-  <div class="row" id="chat-list" style="overflow: auto">
+  <div class="row" id="chat-list " style="overflow: auto">
     <single-user
       v-for="(item, index) in rooms"
       :key="index"
@@ -95,3 +95,8 @@ export default {
   },
 };
 </script>
+<style >
+#chat-list-area {
+  max-height: 100vh !important;
+}
+</style>
