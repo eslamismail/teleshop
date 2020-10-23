@@ -69,13 +69,15 @@ class Room extends Model
                 if ($this->image && file_exists('uploads/' . public_path($this->image))) {
                     return url('uploads/' . $this->image);
                 }
-                return null;
+                return 'https://www.eclass4learning.com/wp-content/uploads/2015/01/groups-300x199.jpg';
+
             }
         } else {
             if ($this->image && file_exists('uploads/' . public_path($this->image))) {
                 return url('uploads/' . $this->image);
             }
-            return null;
+            return 'https://www.eclass4learning.com/wp-content/uploads/2015/01/groups-300x199.jpg';
+
         }
     }
 

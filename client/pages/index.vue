@@ -35,6 +35,9 @@ export default {
   mounted() {
     this.getRooms();
   },
+  beforeRouteLeave(to, from, next) {
+    Echo.leave(`room-${this.user.id}`);
+  },
   created() {
     Echo.private(`room-${this.user.id}`)
       .listen("NewRoom", (e) => {
