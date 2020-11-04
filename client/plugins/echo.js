@@ -12,5 +12,5 @@ window.Echo = new Echo({
   encrypted: false,
   disableStats: true,
   authEndpoint: `${process.env.apiUrl}/broadcasting/auth`,
-  auth: { headers: { Authorization: "Bearer " + token } }
+  auth: { headers: { Authorization: "Bearer " + token } },
 });

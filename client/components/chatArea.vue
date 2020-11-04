@@ -49,7 +49,6 @@ export default {
         this.resetForm();
         this.openSocket();
       } catch (error) {
-        console.log(error);
         if (!error.response) {
           this.$notify({
             group: "foo",

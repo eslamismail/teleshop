@@ -20,7 +20,7 @@
         {{ room.room_name }}
       </div>
       <div class="text-white small" id="details">
-        {{ typing ? typing : created_at }}
+        {{ typing ? typing : online ? online : created_at }}
       </div>
     </div>
     <div class="d-flex flex-row align-items-center ml-auto">
@@ -49,14 +49,59 @@ export default {
     typing() {
       return this.$store.state.chat.typing;
     },
+    user() {
+      return this.$store.state.login.user;
+    },
   },
   data() {
     return {
       created_at: null,
+      online: null,
+      users: [],
     };
   },
   mounted() {
     this.setCreatedAt();
+
+    Echo.join(`chat-${this.room.id}`)
+      .here((users) => {
+        this.users = users;
+        let online = null;
+
+        if (this.users.length > 1 && this.room.type != "one") {
+          let number = this.users.length - 1;
+          online = "you and " + number + " online";
+        } else if (this.users.length > 1 && this.room.type == "one") {
+          online = "online";
+        }
+        this.online = online;
+      })
+      .joining((user) => {
+        this.users.push(user);
+        let online = null;
+
+        if (this.users.length > 1 && this.room.type != "one") {
+          let number = this.users.length - 1;
+          online = "you and " + number + " online";
+        } else if (this.users.length > 1 && this.room.type == "one") {
+          online = "online";
+        }
+        this.online = online;
+      })
+      .leaving((user) => {
+        this.users = this.users.filter((item) => {
+          return item.id != user.id;
+        });
+
+        let online = null;
+        if (this.users.length > 1 && this.room.type != "one") {
+          let number = this.users.length - 1;
+          online = "you and " + number + " online";
+        } else if (this.users.length >= 2 && this.room.type == "one") {
+          online = "online";
+        }
+        this.online = online;
+      });
   },
   methods: {
     setCreatedAt() {
